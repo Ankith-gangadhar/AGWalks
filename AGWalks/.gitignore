@@ -19,3 +19,11 @@
 # Others
 *.sourceli*
 *.AssemblyAttributes.*
+
+# Build results
+bin/
+obj/
+
+# Debug/Release folders inside bin or obj
+[Dd]ebug/
+[Rr]elease/
