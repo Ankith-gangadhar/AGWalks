@@ -1,4 +1,5 @@
 using AGWalks.API.Data;
+using AGWalks.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AGWalksDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("AGWalksConnectionString")));
+
+builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 
 var app = builder.Build();
 

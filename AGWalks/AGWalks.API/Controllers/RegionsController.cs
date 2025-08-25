@@ -1,6 +1,7 @@
 ﻿using AGWalks.API.Data;
 using AGWalks.API.Models.Domain;
 using AGWalks.API.Models.DTO;
+using AGWalks.API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,19 +14,21 @@ namespace AGWalks.API.Controllers
     public class RegionsController : ControllerBase
     {
         private readonly AGWalksDbContext dbContext;
+        private readonly IRegionRepository regionRepository;
 
-        public RegionsController(AGWalksDbContext dbContext)
+        public RegionsController(AGWalksDbContext dbContext, IRegionRepository regionRepository)
         {
             this.dbContext = dbContext;
+            this.regionRepository = regionRepository;
         }
 
         // GET ALL REGIONS
         // GET: https://localhost:7097/api/regions
         [HttpGet]
-        public async Task<IActionResult> GetAll ()
+        public async Task<IActionResult> GetAll()
         {
             //Get data from database - Domain Models
-            var regionsDomain = await dbContext.Regions.ToListAsync();
+            var regionsDomain = await regionRepository.GetAllAsync();
 
             //Map domain models to DTO
             var regionsDto = new List<RegionDto>();
@@ -52,7 +55,7 @@ namespace AGWalks.API.Controllers
         {
             //var region = dbContext.Regions.Find(id); find is used specifically for primary keys
             //Get region Data from database -- Domain Model
-            var regionDomain = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id); //Can be used as universal
+            var regionDomain = await regionRepository.GetByIdAsync(id);
 
             if (regionDomain == null)
             {   
@@ -86,8 +89,7 @@ namespace AGWalks.API.Controllers
             };
 
             //Use Domain model to create request
-            await dbContext.Regions.AddAsync(regiondomainmodel);
-            await dbContext.SaveChangesAsync();
+            regiondomainmodel = await regionRepository.CreateAsync(regiondomainmodel);
 
             //Map Domain to DTO
             var regionDto = new RegionDto
@@ -107,19 +109,20 @@ namespace AGWalks.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+            //Map DTO to Domain Model
+            var regionDomainModel = new Region
+            {
+                Code = updateRegionRequestDto.Code,
+                Name = updateRegionRequestDto.Name,
+                RegionImageUrl = updateRegionRequestDto.RegionImageUrl
+            };
+
+            regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
 
             if (regionDomainModel == null)
             {
                 return NotFound();
             }
-
-            //Map DTO to Domain Model
-            regionDomainModel.Code = updateRegionRequestDto.Code;
-            regionDomainModel.Name = updateRegionRequestDto.Name;
-            regionDomainModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
-
-            await dbContext.SaveChangesAsync();
 
             //Map Domain Model to DTO
             var regionDto = new RegionDto
@@ -138,13 +141,12 @@ namespace AGWalks.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+            var regionDomainModel = await regionRepository.DeleteAsync(id);
             if (regionDomainModel == null)
             {
                 return NotFound();
             }
-            dbContext.Regions.Remove(regionDomainModel);
-            await dbContext.SaveChangesAsync();
+            
             //Map Domain Model to DTO
             var regionDto = new RegionDto
             {
