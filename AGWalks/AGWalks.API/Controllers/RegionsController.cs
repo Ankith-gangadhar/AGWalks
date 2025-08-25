@@ -18,8 +18,8 @@ namespace AGWalks.API.Controllers
             this.dbContext = dbContext;
         }
 
-        //GET ALL REGIONS
-        //GET: https://localhost:7097/api/regions
+        // GET ALL REGIONS
+        // GET: https://localhost:7097/api/regions
         [HttpGet]
         public IActionResult GetAll ()
         {
@@ -43,8 +43,8 @@ namespace AGWalks.API.Controllers
             return Ok(regionsDto);
         }
 
-        //GET SINGLE REGION (Get Region by ID)
-        //GET: https://localhost:7097/api/regions{id}
+        // GET SINGLE REGION (Get Region by ID)
+        // GET: https://localhost:7097/api/regions{id}
         [HttpGet]
         [Route("{id:Guid}")]
         public IActionResult GetById([FromRoute] Guid id)
@@ -69,6 +69,35 @@ namespace AGWalks.API.Controllers
 
             //Return DTO to client
             return Ok(regiondto);
+        }
+
+        // POST To Create a Region
+        // POSTP: https://localhost:7097/api/regions
+        [HttpPost]
+        public IActionResult Create([FromBody] AddRegionRequestDto addRegionRequestDto)
+        {
+            //Map DTO to domain
+            var regiondomainmodel = new Region
+            {
+                Code = addRegionRequestDto.Code,
+                Name = addRegionRequestDto.Name,
+                RegionImageUrl = addRegionRequestDto.RegionImageUrl
+            };
+
+            //Use Domain model to create request
+            dbContext.Regions.Add(regiondomainmodel);
+            dbContext.SaveChanges();
+
+            //Map Domain to DTO
+            var regionDto = new RegionDto
+            {
+                Id = regiondomainmodel.Id,
+                Code = regiondomainmodel.Code,
+                Name = regiondomainmodel.Name,
+                RegionImageUrl = regiondomainmodel.RegionImageUrl
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = regiondomainmodel.Id}, regionDto);
         }
     }
 }
