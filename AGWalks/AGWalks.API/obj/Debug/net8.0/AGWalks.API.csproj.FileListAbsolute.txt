@@ -33,3 +33,4 @@ E:\Udemy\AGWalks\AGWalks\AGWalks.API\obj\Debug\net8.0\refint\AGWalks.API.dll
 E:\Udemy\AGWalks\AGWalks\AGWalks.API\obj\Debug\net8.0\AGWalks.API.pdb
 E:\Udemy\AGWalks\AGWalks\AGWalks.API\obj\Debug\net8.0\AGWalks.API.genruntimeconfig.cache
 E:\Udemy\AGWalks\AGWalks\AGWalks.API\obj\Debug\net8.0\ref\AGWalks.API.dll
+E:\Udemy\AGWalks\AGWalks\AGWalks.API\obj\Debug\net8.0\AGWalks.API.sourcelink.json
