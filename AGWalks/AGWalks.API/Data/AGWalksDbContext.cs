@@ -5,7 +5,7 @@ namespace AGWalks.API.Data
 {
     public class AGWalksDbContext : DbContext
     {
-        public AGWalksDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+        public AGWalksDbContext(DbContextOptions<AGWalksDbContext> dbContextOptions) : base(dbContextOptions)
         {
             
         }

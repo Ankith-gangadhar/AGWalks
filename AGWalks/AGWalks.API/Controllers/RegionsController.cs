@@ -4,6 +4,7 @@ using AGWalks.API.Models.Domain;
 using AGWalks.API.Models.DTO;
 using AGWalks.API.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace AGWalks.API.Controllers
     //https://localhost:7097/api/regions
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RegionsController : ControllerBase
     {
         private readonly AGWalksDbContext dbContext;
