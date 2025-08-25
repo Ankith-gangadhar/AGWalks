@@ -1,6 +1,8 @@
 using AGWalks.API.Data;
+using AGWalks.API.Mappings;
 using AGWalks.API.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<AGWalksDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("AGWalksConnectionString")));
 
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 
