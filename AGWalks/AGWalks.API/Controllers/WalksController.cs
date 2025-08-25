@@ -55,5 +55,35 @@ namespace AGWalks.API.Controllers
             }
             return Ok(mapper.Map<WalkDto>(walkDomainModel));
         }
+
+        //UPDATE A WALK
+        // PUT : https://localhost:7097/api/walks{id}
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
+        {
+            var walkDomainModel = mapper.Map<Walk>(updateWalkRequestDto);
+            walkDomainModel = await walkRepository.UpdateAsync(id, walkDomainModel);
+            if (walkDomainModel == null)
+            {
+                return NotFound();
+            }
+            return Ok(mapper.Map<WalkDto>(walkDomainModel));
+        }
+
+        //DELETE A WALK
+        // DELETE : https://localhost:7097/api/walks{id}
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            var deleteWalkDomainModel = await walkRepository.DeleteAsync(id);
+            if (deleteWalkDomainModel == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(mapper.Map<WalkDto>(deleteWalkDomainModel));
+        }
     }
 }
