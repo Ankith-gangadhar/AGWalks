@@ -14,7 +14,6 @@ namespace AGWalks.API.Controllers
     //https://localhost:7097/api/regions
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RegionsController : ControllerBase
     {
         private readonly AGWalksDbContext dbContext;
@@ -32,6 +31,7 @@ namespace AGWalks.API.Controllers
         // GET ALL REGIONS
         // GET: https://localhost:7097/api/regions
         [HttpGet]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll()
         {
             //Get data from database - Domain Models
@@ -44,6 +44,7 @@ namespace AGWalks.API.Controllers
         // GET SINGLE REGION (Get Region by ID)
         // GET: https://localhost:7097/api/regions{id}
         [HttpGet]
+        [Authorize(Roles = "Reader")]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
@@ -63,6 +64,7 @@ namespace AGWalks.API.Controllers
         // POST To Create a Region
         // POST: https://localhost:7097/api/regions
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         [ValidateModel]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
@@ -84,6 +86,7 @@ namespace AGWalks.API.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
 
@@ -104,6 +107,7 @@ namespace AGWalks.API.Controllers
         // DELETE: https://localhost:7097/api/regions{id}
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var regionDomainModel = await regionRepository.DeleteAsync(id);
