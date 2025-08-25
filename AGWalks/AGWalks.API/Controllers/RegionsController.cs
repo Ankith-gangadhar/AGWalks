@@ -3,6 +3,7 @@ using AGWalks.API.Models.Domain;
 using AGWalks.API.Models.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AGWalks.API.Controllers
 {
@@ -21,10 +22,10 @@ namespace AGWalks.API.Controllers
         // GET ALL REGIONS
         // GET: https://localhost:7097/api/regions
         [HttpGet]
-        public IActionResult GetAll ()
+        public async Task<IActionResult> GetAll ()
         {
             //Get data from database - Domain Models
-            var regionsDomain = dbContext.Regions.ToList();
+            var regionsDomain = await dbContext.Regions.ToListAsync();
 
             //Map domain models to DTO
             var regionsDto = new List<RegionDto>();
@@ -47,11 +48,11 @@ namespace AGWalks.API.Controllers
         // GET: https://localhost:7097/api/regions{id}
         [HttpGet]
         [Route("{id:Guid}")]
-        public IActionResult GetById([FromRoute] Guid id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             //var region = dbContext.Regions.Find(id); find is used specifically for primary keys
             //Get region Data from database -- Domain Model
-            var regionDomain = dbContext.Regions.FirstOrDefault(x => x.Id == id); //Can be used as universal
+            var regionDomain = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id); //Can be used as universal
 
             if (regionDomain == null)
             {   
@@ -74,7 +75,7 @@ namespace AGWalks.API.Controllers
         // POST To Create a Region
         // POST: https://localhost:7097/api/regions
         [HttpPost]
-        public IActionResult Create([FromBody] AddRegionRequestDto addRegionRequestDto)
+        public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
             //Map DTO to domain
             var regiondomainmodel = new Region
@@ -85,8 +86,8 @@ namespace AGWalks.API.Controllers
             };
 
             //Use Domain model to create request
-            dbContext.Regions.Add(regiondomainmodel);
-            dbContext.SaveChanges();
+            await dbContext.Regions.AddAsync(regiondomainmodel);
+            await dbContext.SaveChangesAsync();
 
             //Map Domain to DTO
             var regionDto = new RegionDto
@@ -104,9 +105,9 @@ namespace AGWalks.API.Controllers
         // PUT: https://localhost:7097/api/regions{id}
         [HttpPut]
         [Route("{id:Guid}")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            var regionDomainModel = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
 
             if (regionDomainModel == null)
             {
@@ -118,7 +119,7 @@ namespace AGWalks.API.Controllers
             regionDomainModel.Name = updateRegionRequestDto.Name;
             regionDomainModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
 
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             //Map Domain Model to DTO
             var regionDto = new RegionDto
@@ -135,15 +136,15 @@ namespace AGWalks.API.Controllers
         // DELETE: https://localhost:7097/api/regions{id}
         [HttpDelete]
         [Route("{id:Guid}")]
-        public IActionResult Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var regionDomainModel = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
             if (regionDomainModel == null)
             {
                 return NotFound();
             }
             dbContext.Regions.Remove(regionDomainModel);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
             //Map Domain Model to DTO
             var regionDto = new RegionDto
             {
