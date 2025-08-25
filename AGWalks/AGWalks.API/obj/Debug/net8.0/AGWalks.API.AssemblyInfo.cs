@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AGWalks.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43e5fa28d8cf969ebda0da85fffbd3eae7392273")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d04ef278a665f626ded6e7384abbf99f79590879")]
 [assembly: System.Reflection.AssemblyProductAttribute("AGWalks.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AGWalks.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
