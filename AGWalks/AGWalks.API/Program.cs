@@ -18,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
+    .WriteTo.File("Logs/AgWalks_log.txt", rollingInterval :RollingInterval.Minute)
     .MinimumLevel.Warning()
     .CreateLogger();
 
