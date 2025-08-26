@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace AGWalks.API.Controllers
 {
@@ -19,28 +20,41 @@ namespace AGWalks.API.Controllers
         private readonly AGWalksDbContext dbContext;
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
+        private readonly ILogger<RegionsController> logger;
 
         public RegionsController(AGWalksDbContext dbContext, IRegionRepository regionRepository,
-            IMapper mapper)
+            IMapper mapper,ILogger<RegionsController> logger)
         {
             this.dbContext = dbContext;
             this.regionRepository = regionRepository;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         // GET ALL REGIONS
         // GET: https://localhost:7097/api/regions
         [HttpGet]
-        [Authorize(Roles = "Reader")]
+        //[Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll()
         {
-            //Get data from database - Domain Models
-            var regionsDomain = await regionRepository.GetAllAsync();
+            try
+            {
+                throw new Exception("This is a test exception for logging purposes.");
+                //Get data from database - Domain Models
+                var regionsDomain = await regionRepository.GetAllAsync();
 
-            //Return DTOs
-            return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
+                logger.LogInformation($"Finished GetAllRegions request with data: {JsonSerializer.Serialize(regionsDomain)}");
+
+                //Return DTOs
+                return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                throw;
+            }
         }
-
+        
         // GET SINGLE REGION (Get Region by ID)
         // GET: https://localhost:7097/api/regions{id}
         [HttpGet]
