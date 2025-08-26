@@ -1,4 +1,6 @@
-﻿using AGWalks.API.Models.DTO;
+﻿using AGWalks.API.Models.Domain;
+using AGWalks.API.Models.DTO;
+using AGWalks.API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +10,13 @@ namespace AGWalks.API.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
+        private readonly IImageRespotiroy imageRespoitory;
+
+        public ImagesController(IImageRespotiroy imageRespoitory)
+        {
+            this.imageRespoitory = imageRespoitory;
+        }
+
         // POST: api/Images/Upload
         [HttpPost]
         [Route("Upload")]
@@ -17,10 +26,20 @@ namespace AGWalks.API.Controllers
 
             if(ModelState.IsValid)
             {
+                var imageDomainModel = new Image
+                {
+                    File = request.File,
+                    FileExtension = Path.GetExtension(request.File.FileName),
+                    FileSizeInBytes = request.File.Length,
+                    Filename = request.FileName,
+                    FileDescription = request.FileDescription
+                };
 
+                await imageRespoitory.Upload(imageDomainModel);
+
+                return Ok(imageDomainModel);
             }
             return BadRequest(ModelState);
-
         }
 
         private void ValidateFileUpload(ImageRequestUploadDto request)
